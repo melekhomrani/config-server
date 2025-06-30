@@ -1,0 +1,26 @@
+
+server:
+  port: 8081
+
+spring:
+  application:
+    name: ms-product
+  data:
+    mongodb:
+      host: productdb
+      port: 27017
+      database: ms_product
+      username: root
+      password: root
+      authentication-database: admin
+
+eureka:
+  instance:
+    hostname: ms-product
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-server:8761/eureka/
+
+logging:
+  level:
+    com.store.product: DEBUG

@@ -1,0 +1,26 @@
+server:
+  port: 8989
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+          routes:
+          - id: ms-product
+            uri: lb:http://MS-PRODUCT
+            predicates:
+              - Path=/api/products/**
+          - id: ms-manufacturer
+            uri: lb:http://MS-MANUFACTURER
+            predicates:
+              - Path=/api/manufacturers/**
+
+eureka:
+  instance:
+    hostname: gateway
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-server:8761/eureka/
