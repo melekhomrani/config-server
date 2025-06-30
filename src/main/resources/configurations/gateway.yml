@@ -8,15 +8,68 @@ spring:
           discovery:
             locator:
               enabled: true
+          globalcors:
+            cors-configurations:
+              "[/**]":
+                allowedOriginPatterns: "*"
+                allowedMethods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                  - OPTIONS
+                allowedHeaders: "*"
+                allowCredentials: true
           routes:
-          - id: ms-product
-            uri: lb:http://MS-PRODUCT
-            predicates:
-              - Path=/api/products/**
-          - id: ms-manufacturer
-            uri: lb:http://MS-MANUFACTURER
-            predicates:
-              - Path=/api/manufacturers/**
+            - id: ms-product
+              uri: lb:http://MS-PRODUCT
+              predicates:
+                - Path=/api/products/**
+              filters:
+                - TokenRelay=
+            - id: ms-manufacturer
+              uri: lb:http://MS-MANUFACTURER
+              predicates:
+                - Path=/api/manufacturers/**
+              filters:
+                - TokenRelay=
+            # Auth routes (public)
+            - id: auth-login
+              uri: http://keycloak:18080
+              predicates:
+                - Path=/auth/login
+              filters:
+                - RedirectTo=302, /oauth2/authorization/keycloak
+                
+            - id: auth-logout
+              uri: http://keycloak:18080
+              predicates:
+                - Path=/auth/logout
+              filters:
+                - RedirectTo=302, /logout
+  # Keycloak OAuth2 Configuration
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:18080/realms/ms-esprit
+          jwk-set-uri: http://keycloak:18080/realms/ms-esprit/protocol/openid-connect/certs
+      client:
+        registration:
+          keycloak:
+            client-id: gateway
+            client-secret: jopFAgTQkiLnAUgMgUqr1SJByZRAPN8C
+            scope: openid,profile,email
+            authorization-grant-type: authorization_code
+            redirect-uri: http://keycloak:18080/login/oauth2/code/keycloak
+        provider:
+          keycloak:
+            issuer-uri: http://keycloak:18080/realms/ms-esprit
+            authorization-uri: http://keycloak:18080/realms/ms-esprit/protocol/openid-connect/auth
+            token-uri: http://keycloak:18080/realms/ms-esprit/protocol/openid-connect/token
+            user-info-uri: http://keycloak:18080/realms/ms-esprit/protocol/openid-connect/userinfo
+            jwk-set-uri: http://keycloak:18080/realms/ms-esprit/protocol/openid-connect/certs
+            user-name-attribute: preferred_username
 
 eureka:
   instance:
@@ -24,3 +77,10 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://eureka-server:8761/eureka/
+
+# Management endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
