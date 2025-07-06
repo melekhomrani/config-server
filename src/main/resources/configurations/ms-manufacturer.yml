@@ -2,8 +2,6 @@ server:
   port: 8082
 
 spring:
-  application:
-    name: ms-manufacturer
   datasource:
     url: jdbc:mysql://manufacturerdb:3306/manufacturer_db?createDatabaseIfNotExist=true
     username: root
@@ -16,6 +14,11 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8080/realms/authentication
 
 eureka:
   instance:

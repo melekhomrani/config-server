@@ -2,8 +2,6 @@ server:
   port: 8989
 
 spring:
-  application:
-    name: gateway
   cloud:
     gateway:
       server:
@@ -21,6 +19,19 @@ spring:
               uri: lb://MS-MANUFACTURER
               predicates:
                 - Path=/api/manufacturers/**
+          globalcors:
+            corsConfigurations:
+              "[/**]":
+                allowedOrigins: "*"
+                allowedMethods: "*"
+                allowedHeaders: "*"
+                allowCredentials: false
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8080/realms/authentication
 
 eureka:
   instance:
