@@ -11,3 +11,13 @@ eureka:
 logging:
   level:
     com.store.eureka-server: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true

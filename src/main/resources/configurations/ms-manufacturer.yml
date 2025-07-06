@@ -30,3 +30,13 @@ eureka:
 logging:
   level:
     com.store.manufacturer: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
