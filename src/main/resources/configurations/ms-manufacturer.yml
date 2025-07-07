@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 8083
 
 spring:
   datasource:
@@ -19,6 +19,14 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://keycloak:8080/realms/authentication
+  kafka:
+    bootstrap-servers: kafka:29092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.trusted.packages: '*'
+        spring.json.type.mapping: manufacturerNotification:com.store.kafka.ManufacturerNotification
 
 eureka:
   instance:
